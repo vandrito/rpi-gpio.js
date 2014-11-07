@@ -80,7 +80,8 @@ var PINS = {
     }
 };
 
-function Gpio() {
+function Gpio(stub) {
+    if (stub) return new GpioStub();
     var currentPins;
     var exportedInputPins  = {};
     var exportedOutputPins = {};
@@ -377,4 +378,45 @@ function isExported(pin, cb) {
     });
 }
 
-module.exports = new Gpio;
+function GpioStub() {
+    this.DIR_IN   = 'in';
+    this.DIR_OUT  = 'out';
+    this.MODE_RPI = 'mode_rpi';
+    this.MODE_BCM = 'mode_bcm';
+
+    this.setMode = function(mode) {
+        debug('[RPI-GPIO] set mode = ' + value);
+    };
+
+    this.setPollFrequency = function(value) {
+        debug('[RPI-GPIO] set poll frequency = ' + value);
+    };
+
+    this.setup = function(channel, direction, onSetup /*err*/) {
+        debug('[RPI-GPIO] setup channel ' + channel + ' => ' + direction);
+
+        onSetup();
+    };
+
+    this.write = this.output = function(channel, value, cb /*err*/ ) {
+        debug('[RPI-GPIO] write channel ' + channel + ' = ' + value);
+
+        cb();
+    };
+
+    this.read = this.input = function(channel, cb /*err,value*/) {
+        debug('[RPI-GPIO] read channel ' + channel);
+        cb();
+    };
+
+    this.destroy = function(cb) {
+        debug('[RPI-GPIO] destroy');
+        cb();
+    };
+
+    this.reset = function() {
+        debug('[RPI-GPIO] reset');
+    };
+}
+
+exports.GPIO = Gpio;

@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/JamesBarwell/rpi-gpio.js.git"
+    "url": "https://github.com/vandrito/rpi-gpio.js.git"
   },
   "author": "James Barwell <jb@jamesbarwell.co.uk>",
   "license": "MIT",

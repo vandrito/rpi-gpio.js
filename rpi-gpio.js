@@ -3,6 +3,7 @@ var util         = require('util');
 var EventEmitter = require('events').EventEmitter;
 var async        = require('async');
 var debug        = require('debug')('rpi-gpio');
+var holdtime     = require('holdtime');
 
 var PATH = '/sys/class/gpio';
 var PINS = {
@@ -207,7 +208,11 @@ function Gpio(stub) {
         }
 
         value = (!!value && value !== '0') ? '1' : '0';
-        fs.writeFile(PATH + '/gpio' + pin + '/value', value, cb || function () {});
+        fs.writeFile(PATH + '/gpio' + pin + '/value', value,  
+            holdtime(function(err, body, time) {
+                debug('write pin ' + pin + ', channel ' + channel + ' = ' + value + ' took %dms', time);
+                if (cb) cb(err);
+            }));
     };
 
     /**
